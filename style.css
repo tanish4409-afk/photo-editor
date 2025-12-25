@@ -33,3 +33,27 @@ button {
   font-size: 14px;
   cursor: pointer;
 }
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
+
+/* Mobile optimization */
+@media (max-width: 600px) {
+  .logo {
+    height: 30px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+}
