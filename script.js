@@ -2,51 +2,70 @@ const upload = document.getElementById("upload");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const brightness = document.getElementById("brightness");
-const contrast = document.getElementById("contrast");
-const grayscaleBtn = document.getElementById("grayscale");
-const resetBtn = document.getElementById("reset");
-
 let img = new Image();
-let originalImageData = null;
+let originalImage = null;
+let currentFilter = "none";
 
-upload.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-        img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
+upload.addEventListener("change", e => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = () => img.src = reader.result;
+  reader.readAsDataURL(file);
 });
 
 img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  canvas.width = img.width;
+  canvas.height = img.height;
+  ctx.drawImage(img, 0, 0);
+  originalImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
 };
 
-function applyFilters() {
-    ctx.putImageData(originalImageData, 0, 0);
-    ctx.filter = `
-        brightness(${brightness.value}%)
-        contrast(${contrast.value}%)
-    `;
-    ctx.drawImage(canvas, 0, 0);
+function setFilter(filter) {
+  currentFilter = filter;
+  ctx.filter = filter;
+  ctx.drawImage(canvas, 0, 0);
 }
 
-brightness.addEventListener("input", applyFilters);
-contrast.addEventListener("input", applyFilters);
+function blurImage() {
+  ctx.filter = "blur(3px)";
+  ctx.drawImage(canvas, 0, 0);
+}
 
-grayscaleBtn.addEventListener("click", () => {
-    ctx.filter = "grayscale(100%)";
-    ctx.drawImage(canvas, 0, 0);
-});
+function sharpenImage() {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const d = imageData.data;
+  for (let i = 0; i < d.length; i += 4) {
+    d[i] += 10;
+    d[i+1] += 10;
+    d[i+2] += 10;
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
 
-resetBtn.addEventListener("click", () => {
-    brightness.value = 100;
-    contrast.value = 100;
-    ctx.filter = "none";
-    ctx.putImageData(originalImageData, 0, 0);
-});
+function cropImage() {
+  const w = canvas.width / 2;
+  const h = canvas.height / 2;
+  const cropped = ctx.getImageData(
+    canvas.width / 4,
+    canvas.height / 4,
+    w,
+    h
+  );
+  canvas.width = w;
+  canvas.height = h;
+  ctx.putImageData(cropped, 0, 0);
+}
+
+function downloadImage() {
+  const link = document.createElement("a");
+  link.download = "edited-image.png";
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+function resetImage() {
+  canvas.width = originalImage.width;
+  canvas.height = originalImage.height;
+  ctx.filter = "none";
+  ctx.putImageData(originalImage, 0, 0);
+}
