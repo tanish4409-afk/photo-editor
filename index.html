@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Photo Editor</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Photo Editor Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Simple Photo Editor</h1>
+<h1>Photo Editor Pro</h1>
 
 <input type="file" id="upload" accept="image/*">
 
-<canvas id="canvas"></canvas>
+<div class="editor">
+  <canvas id="canvas"></canvas>
+</div>
 
 <div class="controls">
-    <label>Brightness</label>
-    <input type="range" id="brightness" min="0" max="200" value="100">
+  <button onclick="setFilter('none')">Normal</button>
+  <button onclick="setFilter('grayscale(100%)')">Grayscale</button>
+  <button onclick="setFilter('sepia(100%)')">Sepia</button>
+  <button onclick="setFilter('contrast(150%)')">Contrast</button>
+  <button onclick="setFilter('saturate(180%)')">Vivid</button>
 
-    <label>Contrast</label>
-    <input type="range" id="contrast" min="0" max="200" value="100">
+  <button onclick="blurImage()">Blur</button>
+  <button onclick="sharpenImage()">Sharpen</button>
 
-    <button id="grayscale">Grayscale</button>
-    <button id="reset">Reset</button>
+  <button onclick="cropImage()">Crop</button>
+  <button onclick="downloadImage()">Download</button>
+  <button onclick="resetImage()">Reset</button>
 </div>
 
 <script src="script.js"></script>
